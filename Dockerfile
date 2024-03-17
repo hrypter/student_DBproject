@@ -1,9 +1,13 @@
 FROM ubuntu-debootstrap:latest AS build
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get install -y maven
+WORKDIR /app
 COPY . .
-RUN .mvn/wrapper/maven-wrapper.jar  --no-daemon
+RUN mvn clean package
+
 FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/WebMvcApp05Application.jar /app/WebMvcApp05Application.jar
 EXPOSE 8080
-COPY .. src/main/java/in/suman/WebMvcApp05Application.jar/WebMvcApp05Application
-ENTRYPOINT [ "JAVA","-JAR"WebMvcApp05Application.jar ]
+ENTRYPOINT ["java", "-jar", "WebMvcApp05Application.jar"]
