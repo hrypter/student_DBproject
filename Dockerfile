@@ -1,13 +1,26 @@
-FROM ubuntu:latest AS build
-RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
-    apt-get install -y maven
+# Build stage
+FROM maven:latest AS build
+
+# Set working directory
 WORKDIR /app
+
+# Copy the entire project directory into the container
 COPY . .
+
+# Run Maven build
 RUN mvn clean package
 
+# Run stage
 FROM openjdk:17-jdk-slim
+
+# Set working directory
 WORKDIR /app
-COPY --from=build /app/target/WebMvcApp05Application.jar /app/WebMvcApp05Application.jar
+
+# Copy the compiled application from the build stage
+COPY --from=build /app/target/WebMVC-App05-0.0.1-SNAPSHOT.war ./
+
+# Expose port 8080
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "WebMvcApp05Application.jar"]
+
+# Define the entry point to run the application
+ENTRYPOINT ["java", "-jar", "WebMVC-App05-0.0.1-SNAPSHOT.war"]
