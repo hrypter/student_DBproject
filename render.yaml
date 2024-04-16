@@ -1,0 +1,12 @@
+# Exported from Render on 2024-04-16T05:51:39Z
+databases:
+- name: suman
+  databaseName: suman
+  user: suman
+  plan: free
+  region: oregon
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: everywhere
+  postgresMajorVersion: "16"
+version: "1"
